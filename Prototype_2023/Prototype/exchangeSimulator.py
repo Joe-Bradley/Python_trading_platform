@@ -14,19 +14,23 @@ class ExchangeSimulator:
     
     def __init__(self, marketData_2_exchSim_q, platform_2_exchSim_order_q, exchSim_2_platform_execution_q):
         print("[%d]<<<<< call ExchSim.init" % (os.getpid(),))
-        
+
+        # listening market data
         t_md = threading.Thread(name='exchsim.on_md', target=self.consume_md, args=(marketData_2_exchSim_q,))
         t_md.start()
-        
+
+        # listening trading platform
         t_order = threading.Thread(name='exchsim.on_order', target=self.consume_order, args=(platform_2_exchSim_order_q, exchSim_2_platform_execution_q, ))
         t_order.start()
 
+    # consume market data
     def consume_md(self, marketData_2_exchSim_q):
         while True:
             res = marketData_2_exchSim_q.get()
             print('[%d]ExchSim.consume_md' % (os.getpid()))
             print(res.outputAsDataFrame())
-    
+
+    # consume order
     def consume_order(self, platform_2_exchSim_order_q, exchSim_2_platform_execution_q):
         while True:
             res = platform_2_exchSim_order_q.get()

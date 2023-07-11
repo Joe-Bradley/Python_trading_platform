@@ -18,11 +18,13 @@ class MarketDataService:
         self.produce_market_data(marketData_2_exchSim_q, marketData_2_platform_q)
 
     def produce_market_data(self, marketData_2_exchSim_q, marketData_2_platform_q):
+        # 10 snapshot of market data
         for i in range(10):
             self.produce_quote(marketData_2_exchSim_q, marketData_2_platform_q)
             time.sleep(5)
 
     def produce_quote(self, marketData_2_exchSim_q, marketData_2_platform_q):
+        # 27-37 creat your own
         bidPrice, askPrice, bidSize, askSize = [], [], [], []
         bidPrice1 = 20+random.randint(0,100)/100
         askPrice1 = bidPrice1 + 0.01
@@ -31,9 +33,11 @@ class MarketDataService:
             askPrice.append(askPrice1+i*0.01)
             bidSize.append(100+random.randint(0,100)*100)
             askSize.append(100+random.randint(0,100)*100)
-        quoteSnapshot = OrderBookSnapshot_FiveLevels('testTicker', '20230706', time.asctime(time.localtime(time.time())), 
+        quoteSnapshot = OrderBookSnapshot_FiveLevels('testTicker', '20230706', time.asctime(time.localtime(time.time())),
                                                      bidPrice, askPrice, bidSize, askSize)
         print('[%d]MarketDataService>>>produce_quote' % (os.getpid()))
         print(quoteSnapshot.outputAsDataFrame())
+
+        #sending to platform and exchange
         marketData_2_exchSim_q.put(quoteSnapshot)
         marketData_2_platform_q.put(quoteSnapshot)
